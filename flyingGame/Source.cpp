@@ -196,8 +196,180 @@ void drawJet()
 }
 
 
+void drawString(float x, float y, float z, void* font, char* string)
+{
+	char* c;
+	glRasterPos3f(x, y, z);
+
+	for (c = string; *c != '\0'; c++)
+	{
+		glutBitmapCharacter(font, *c);
+	}
+}
+
+void gameEnd()
+{
+	gameEndStatus = true;
+	glColor3f(0.3, 0.56, 0.84);   //game end background screen
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glColor3f(0.137, 0.137, 0.556);
+	glVertex3f(100.0, 0.0, 0.0);
+	glColor3f(0.196, 0.196, 0.8);
+	glVertex3f(100.0, 100.0, 0.0);
+	glVertex3f(0.0, 100.0, 0.0);
+	glEnd();
+	glPushMatrix();
+	glScalef(0.8, 0.8, 0);
+	drawJet();
+	glPopMatrix();
+
+	glColor3f(0.196, 0.196, 0.8);  // disp box
+	glRectf(20.0, 20.0, 80.0, 80.0);
+	glColor3f(0.8, 0.8, 0.8);
+	glRectf(21.0, 21.0, 79.0, 79.0);
+
+	glColor3f(0.196, 0.196, 0.8);   //restart button
+	glRectf(40, 5, 60, 10);
+	glColor3f(0.8, 0.8, 0.8);
+	glRectf(40.5, 5.5, 59.5, 9.5);
+	glColor3f(0.137, 0.137, 0.556);
+
+	drawString(43, 6, 0, GLUT_BITMAP_TIMES_ROMAN_24, "RESTART");
+	drawString(41, 71, 0, GLUT_BITMAP_TIMES_ROMAN_24, "GAME OVER!!!");
+	drawString(23, 61, 0, GLUT_BITMAP_HELVETICA_18, "DISTANCE :");
+	drawString(40, 61, 0, GLUT_BITMAP_TIMES_ROMAN_24, score_Str);
+	printf("m\n");
+	printf("\n");
+	drawString(23, 56, 0, GLUT_BITMAP_HELVETICA_18, "LEVEL         :");
+	drawString(40, 56, 0, GLUT_BITMAP_TIMES_ROMAN_24, slevel);
+
+
+
+	drawString(33, 30, 0, GLUT_BITMAP_HELVETICA_18, " ENJOY PLAYING THE GAME");
+
+	glutPostRedisplay();
+
+}
+
+void drawBg()
+{
+	glPushMatrix();
+
+	glColor3f(0.0, 0.48, 0.047);		// green floor
+
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 9.0, 0.0);
+	glVertex3f(100.0, 9.0, 0.0);
+	glColor3f(0.0, 0.3, 0.03);
+	glVertex3f(100.0, 10.0, 0.0);
+	glVertex3f(0.0, 10.0, 0.0);
+	glVertex3f(0.0, 9.0, 0.0);
+	glEnd();
+
+	glColor3f(0.474, 0.298, 0.074);  // brown ground
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(100.0, 0.0, 0.0);
+	glColor3f(0.3, 0.1, 0.03);
+	glVertex3f(100.0, 9.0, 0.0);
+	glVertex3f(0.0, 9.0, 0.0);
+	glEnd();
+
+	glColor3f(0.5, 0.6, 0.79);
+	glBegin(GL_POLYGON);				//ceiling
+	glVertex3f(0.0, 100.0, 0.0);
+	glVertex3f(100.0, 100.0, 0.0);
+	glColor3f(0.6, 0.7, 0.89);
+	glVertex3f(100.0, 80.0, 0.0);
+	glVertex3f(0.0, 80.0, 0.0);
+	glEnd();
+
+	glColor3f(0.5, 0.6, 0.79);// sky blue
+	glBegin(GL_POLYGON);   //background screen
+	glVertex3f(0.0, 90.0, 5.0);
+	glVertex3f(100.0, 90.0, 5.0);
+	glColor3f(0.7, 0.8, 0.99);//sky
+	glVertex3f(100.0, 10.0, 5.0);
+	glVertex3f(0.0, 10.0, 5.0);
+	glEnd();
+
+	glPopMatrix();
+}
+
+void welcome()
+{
+	glColor3f(0.3, 0.56, 0.84);   //welcome background
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glColor3f(0.137, 0.137, 0.556);
+	glVertex3f(100.0, 0.0, 0.0);
+	glColor3f(0.196, 0.196, 0.8);
+	glVertex3f(100.0, 100.0, 0.0);
+	glVertex3f(0.0, 100.0, 0.0);
+	glEnd();
+	drawJet();
+
+	// button 1 .. PLAY
+	glColor3f(0.196, 0.196, 0.8);
+	glRectf(39.5, 39.5, 60.5, 45.5);
+
+	glColor3f(0.8, 0.8, 0.8);
+	glRectf(40, 40, 60, 45);
+	glColor3f(0.137, 0.137, 0.556);
+	drawString(47, 42, 0, GLUT_BITMAP_HELVETICA_18, "PLAY");
+
+	// button 2 .. instructions
+	glColor3f(0.196, 0.196, 0.8);
+	glRectf(39.5, 29.5, 60.5, 35.5);
+
+	glColor3f(0.8, 0.8, 0.8);
+	glRectf(40, 30, 60, 35);
+	glColor3f(0.137, 0.137, 0.556);
+	drawString(41, 31, 0, GLUT_BITMAP_HELVETICA_18, "INSTRUCTIONS");
+
+	// button 3 .. ABOUT
+	glColor3f(0.196, 0.196, 0.8);
+	glRectf(39.5, 19.5, 60.5, 25.5);
+
+	glColor3f(0.8, 0.8, 0.8);
+	glRectf(40, 20, 60, 25);
+	glColor3f(0.137, 0.137, 0.556);
+	drawString(46, 21, 0, GLUT_BITMAP_HELVETICA_18, "ABOUT");
+
+	// button 4 .. exit
+	glColor3f(0.196, 0.196, 0.8);
+	glRectf(39.5, 9.5, 60.5, 15.5);
+
+	glColor3f(0.8, 0.8, 0.8);
+	glRectf(40, 10, 60, 15);
+	glColor3f(0.137, 0.137, 0.556);
+	drawString(47, 11, 0, GLUT_BITMAP_HELVETICA_18, "EXIT");
+
+
+	glPushMatrix();
+
+	glColor3f(0.8, 0.8, 0.8);
+	drawString(25.5, 92, 0, GLUT_BITMAP_TIMES_ROMAN_24, "Simulation For Real-world Events of Airplane");
+	drawString(35.5, 80, 0, GLUT_BITMAP_TIMES_ROMAN_24, "AIRPLANE GAME");
+	glPopMatrix();
+	glColor3f(0.137, 0.137, 0.556);
+
+}
+
+
 int main(int argc, char** argv)
 {
+	printf("\nHow To Play");
+	printf("Click and hold mouse left key to gain altitude of the plane\n");
+	printf("Release the mouse left key to reduce the altitude\n");
+	printf("Use the Right mouse key to speed up the plane(NOS)\n");
+	printf("\n");
+	printf("-->The main aim of the game is to avoid the obstacles: buildings and clouds\n");
+	printf("-->Also the meter at the bottom shows the distance travelled,NITROS left,Atitude and LEVEL.\n");
+	printf("\n");
+	printf("-->As you reach distance multples of 50 tour level increases as well as the speed of the plane.\n");
+	printf("==>ENJOY PLAYING THE GAME\n");
 	
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
