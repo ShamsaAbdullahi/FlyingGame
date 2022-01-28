@@ -297,7 +297,7 @@ void drawBg()
 	glVertex3f(0.0, 9.0, 0.0);
 	glEnd();
 
-	glColor3f(0.474, 0.298, 0.074);  // brown ground
+	glColor3f(0.474, 0.298, 0.074);  // brown ground 
 	glBegin(GL_POLYGON);
 	glVertex3f(0.0, 0.0, 0.0);
 	glVertex3f(100.0, 0.0, 0.0);
@@ -316,7 +316,7 @@ void drawBg()
 	glEnd();
 
 	glColor3f(0.5, 0.6, 0.79);// sky blue
-	glBegin(GL_POLYGON);   //background screen
+	glBegin(GL_POLYGON);   //background screen of the game
 	glVertex3f(0.0, 90.0, 5.0);
 	glVertex3f(100.0, 90.0, 5.0);
 	glColor3f(0.7, 0.8, 0.99);//sky
@@ -329,7 +329,7 @@ void drawBg()
 
 void welcome()
 {
-	glColor3f(0.3, 0.56, 0.84);   //welcome background
+	glColor3f(0.3, 0.56, 0.84);   //welcome background when game starts
 	glBegin(GL_POLYGON);
 	glVertex3f(0.0, 0.0, 0.0);
 	glColor3f(0.137, 0.137, 0.556);
@@ -509,7 +509,7 @@ bool hitCloud()
 		if (plane_mvmt - 3 + 50 > s.block_y - 6 && plane_mvmt - 3 + 50 < s.block_y - 2)
 			return true;
 
-	//for top wing and bottom wing
+	//for the top wing and bottom wing
 	if (s.block_x < 5 && s.block_x> -3)
 		if (plane_mvmt - 3 + 50 > s.block_y - 11 && plane_mvmt - 3 + 50 < s.block_y + 13)
 			return true;
@@ -520,7 +520,7 @@ bool hitCloud()
 
 bool hitBuilding()
 {
-	if (((int)b.block_x <= 8 && (int)b.block_x >= -7 && ((int)plane_mvmt + 50) - b.block_y <= 3))   //buildin back  body to tail
+	if (((int)b.block_x <= 8 && (int)b.block_x >= -7 && ((int)plane_mvmt + 50) - b.block_y <= 3))   //building back  body to tail
 		return true;
 	else if (((int)b.block_x <= 10 && (int)b.block_x >= -5 && ((int)plane_mvmt + 50) - b.block_y <= 0))   //body to tail
 		return true;
@@ -534,7 +534,7 @@ bool hitBuilding()
 
 bool boundHit()
 {
-	if (plane_mvmt + 50 >= 100 || plane_mvmt + 50 <= 18)   // top and bottom boundary
+	if (plane_mvmt + 50 >= 100 || plane_mvmt + 50 <= 18)   // top and bottom boundary of screen
 		return true;
 	else
 		return false;
@@ -542,7 +542,7 @@ bool boundHit()
 
 void totalScore()
 {
-	glColor3f(1.0, 1.0, 0.0);//score
+	glColor3f(1.0, 1.0, 0.0);//scores
 
 
 
@@ -572,7 +572,7 @@ void display()
 	{
 		gameEnd();
 	}
-	else if (wflag == true)//Welcome Screen
+	else if (wflag == true)//Welcome Screen when game starts
 	{
 		welcome();
 	}
