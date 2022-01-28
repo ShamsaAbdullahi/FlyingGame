@@ -1,3 +1,5 @@
+//A flying game that involves avoiding obstacles on the track
+
 #include<windows.h>
 #include<stdlib.h>
 #include<gl/glut.h>
@@ -5,7 +7,7 @@
 #include<stdio.h>
 #include<math.h>
 
-//using namespace std;
+using namespace std;
 
 #define BLOCKSPEED 0.09
 
@@ -14,7 +16,7 @@
 
 int SCREENH = 600, SCREENW = 800;
 
-//DECLARE OBSTACLES
+//-------------- Obstacles declaration--------
 typedef struct building
 {
 	float block_x, block_y;
@@ -29,35 +31,47 @@ typedef struct Cloud
 	bool state;
 }Cloud;
 
-//
-float bspd = BLOCKSPEED;  // block speed
-bool pause = false, lflag = true, wflag = true, gameEndStatus = false, instflag = false, abtflag = false, start = false;  //flags
-float plane_mvmt = 0.0;//jet movement up or down
+
+//game declarations
+
+//Speed
+float bspd = BLOCKSPEED; 
+
+//flags
+bool pause = false, lflag = true, wflag = true, gameEndStatus = false, instflag = false, abtflag = false, start = false; 
+
+//up and down movement/ scores
+float plane_mvmt = 0.0;
 float score = 1;
+
 char score_Str[20], slevel[20];   //score string and levelstring
 int level = 1, buildColor;     // initial level=1
 building b;  // building struct
 Cloud s;     // cloud struct
 float booster = BOOSTER_MAX, boost = 0;
 
+//plane bounds
 
-//function prototypes
+
+
+
+//Functions
 void keyPressed(unsigned char, int, int);
 void mouse(int button, int state, int x, int y);
-void drawString(float x, float y, float z, void* font, char* string);//what does this do??
+void drawString(float x, float y, float z, void* font, char* string);
 
-void buildingBlock();
-void CloudBlock();
+void buildBlocks();
+void CloudBlocks();
 void init();
 void drawJet();
 void gameEnd();
 void drawBg();
 void welcome();
 void drawBuilding();
-void drawCloud();
-bool cloudHit();
-bool buildingHit();
-void printScore();
+void cloud();
+bool hitCloud();
+bool hitBuilding();
+void totalScore();
 void display();
 void moveJetU();
 void moveJetD();
@@ -65,7 +79,7 @@ void moveJetD();
 
 
 
-void buildingBlock()
+void buildBlocks()
 {
 	b.block_x = 50.0;
 	srand(time(0));
@@ -78,7 +92,7 @@ void buildingBlock()
 
 }
 
-void CloudBlock()
+void CloudBlocks()
 {
 	s.block_x = 50.0;
 	srand(time(0));
@@ -105,7 +119,6 @@ void semiCircle(float p1, float q1, float radius)
 }
 
 
-
 void Circle(float x1, float y1, float radius)
 {
 	float x2, y2;
@@ -121,11 +134,11 @@ void Circle(float x1, float y1, float radius)
 	glEnd();
 
 }
-//plane bounds
 
+//Drawing the Jet
 void drawJet()
 {
-	//left tail 
+	//jet left tail wing
 
 	glColor3f(0.6, 0.6, 0.6);
 	glBegin(GL_POLYGON);
@@ -136,7 +149,7 @@ void drawJet()
 	glEnd();
 
 
-	//left front 
+	//jet left front wing
 
 	glColor3f(0.6, 0.6, 0.6);
 	glBegin(GL_POLYGON);
@@ -146,7 +159,7 @@ void drawJet()
 	glVertex2f(11.0, 50.0);
 	glEnd();
 
-	//tail
+	//jet tail
 	glColor3f(0.5, 0.5, 0.5);
 	glBegin(GL_POLYGON);
 	glVertex2f(4.7, 45.0);
@@ -156,7 +169,7 @@ void drawJet()
 	glEnd();
 
 
-	//body
+	//jet body
 	glColor3f(0.5, 0.5, 0.5);
 	glBegin(GL_POLYGON);
 	glVertex2f(5.0, 48.0);
@@ -167,7 +180,7 @@ void drawJet()
 	glEnd();
 
 
-	//right front wing
+	//jet right front wing
 	glColor3f(0.6, 0.6, 0.6);
 	glBegin(GL_POLYGON);
 	glVertex2f(13.0, 46.0);
@@ -191,7 +204,7 @@ void drawJet()
 	glEnd();
 
 
-	//right tail wing
+	//jet right tail wing
 	glColor3f(0.6, 0.6, 0.6);
 	glBegin(GL_POLYGON);
 	glVertex2f(5.5, 47.0);
@@ -227,7 +240,7 @@ void drawString(float x, float y, float z, void* font, char* string)
 void gameEnd()
 {
 	gameEndStatus = true;
-	glColor3f(2.0f, 0.5f, 1.0f);   //game end background screen
+	glColor3f(0.3, 0.56, 0.84);   //game end background screen
 	glBegin(GL_POLYGON);
 	glVertex3f(0.0, 0.0, 0.0);
 	glColor3f(0.137, 0.137, 0.556);
@@ -241,7 +254,7 @@ void gameEnd()
 	drawJet();
 	glPopMatrix();
 
-	glColor3f(0.196, 0.196, 0.8);  // disp box
+	glColor3f(0.196, 0.196, 0.8);  // display box
 	glRectf(20.0, 20.0, 80.0, 80.0);
 	glColor3f(0.8, 0.8, 0.8);
 	glRectf(21.0, 21.0, 79.0, 79.0);
@@ -252,7 +265,7 @@ void gameEnd()
 	glRectf(40.5, 5.5, 59.5, 9.5);
 	glColor3f(0.137, 0.137, 0.556);
 
-	 drawString(43, 6, 0, GLUT_BITMAP_TIMES_ROMAN_24, ((char*)"RESTART"));
+	drawString(43, 6, 0, GLUT_BITMAP_TIMES_ROMAN_24, ((char*)"RESTART"));
 	drawString(41, 71, 0, GLUT_BITMAP_TIMES_ROMAN_24, ((char*)"GAME OVER!!!"));
 	drawString(23, 61, 0, GLUT_BITMAP_HELVETICA_18, ((char*)"DISTANCE :"));
 	drawString(40, 61, 0, GLUT_BITMAP_TIMES_ROMAN_24, score_Str);
@@ -303,7 +316,7 @@ void drawBg()
 	glEnd();
 
 	glColor3f(0.5, 0.6, 0.79);// sky blue
-	glBegin(GL_POLYGON);   //background screen polygon
+	glBegin(GL_POLYGON);   //background screen
 	glVertex3f(0.0, 90.0, 5.0);
 	glVertex3f(100.0, 90.0, 5.0);
 	glColor3f(0.7, 0.8, 0.99);//sky
@@ -316,7 +329,7 @@ void drawBg()
 
 void welcome()
 {
-	glColor3f(2.0f, 0.5f, 1.0f);;   //welcome background
+	glColor3f(0.3, 0.56, 0.84);   //welcome background
 	glBegin(GL_POLYGON);
 	glVertex3f(0.0, 0.0, 0.0);
 	glColor3f(0.137, 0.137, 0.556);
@@ -343,7 +356,7 @@ void welcome()
 	glColor3f(0.8, 0.8, 0.8);
 	glRectf(40, 30, 60, 35);
 	glColor3f(0.137, 0.137, 0.556);
-	drawString(41, 31, 0, GLUT_BITMAP_HELVETICA_18, ((char*)"GAME GUIDE"));
+	drawString(41, 31, 0, GLUT_BITMAP_HELVETICA_18, ((char*)"INSTRUCTIONS"));
 
 	// button 3 .. ABOUT
 	glColor3f(0.196, 0.196, 0.8);
@@ -374,9 +387,115 @@ void welcome()
 
 }
 
+void drawBuilding()
+{
+	glPushMatrix();						// 3D part
+	if (buildColor == 0)
+		glColor3f(0.1, 0.0, 0.0);
+	else if (buildColor == 1)
+		glColor3f(0.1, 0.1, 0.0);
+	else
+		glColor3f(0.0, 0.1, 0.1);
 
+	glTranslatef(b.block_x, b.no_floors * 10.0 + 10, 0.0);
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(5.0, 3.0, 0.0);
+	glVertex3f(20.0, 3.0, 0.0);
+	glVertex3f(20.0, -b.no_floors * 10.0, 0.0);
+	glVertex3f(0.0, -b.no_floors * 10.0, 0.0);
+	glEnd();
+	glPopMatrix();
 
-bool cloudHit()
+	for (int i = 1; i <= b.no_floors; i++)
+	{
+		glPushMatrix();
+
+		if (buildColor == 0)
+			glColor3f(0.8, 0.0, 0.0);
+		else if (buildColor == 1)
+			glColor3f(0.8, 0.8, 0.0);
+		else
+			glColor3f(0.0, 0.8, 0.8);
+
+		glTranslatef(b.block_x, 10.0 * i, 0.0);   //base
+		glBegin(GL_POLYGON);
+		glVertex3f(0.0, 0.0, 0.0);
+		glVertex3f(15.0, 0.0, 0.0);
+		glVertex3f(15.0, 10.0, 0.0);
+		glVertex3f(0.0, 10.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // left window
+		glBegin(GL_POLYGON);
+		glVertex3f(2.5, 5.0, 0.0);
+		glVertex3f(5.5, 5.0, 0.0);
+		glVertex3f(5.5, 8.0, 0.0);
+		glVertex3f(2.5, 8.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // left window
+		glBegin(GL_POLYGON);
+		glVertex3f(2.5, 0.0, 0.0);
+		glVertex3f(5.5, 0.0, 0.0);
+		glVertex3f(5.5, 3.0, 0.0);
+		glVertex3f(2.5, 3.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // right window
+		glBegin(GL_POLYGON);
+		glVertex3f(12.5, 5.0, 0.0);
+		glVertex3f(9.5, 5.0, 0.0);
+		glVertex3f(9.5, 8.0, 0.0);
+		glVertex3f(12.5, 8.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // right window
+		glBegin(GL_POLYGON);
+		glVertex3f(12.5, .0, 0.0);
+		glVertex3f(9.5, 0.0, 0.0);
+		glVertex3f(9.5, 3.0, 0.0);
+		glVertex3f(12.5, 3.0, 0.0);
+		glEnd();
+		glPopMatrix();
+	}
+	glPushMatrix();
+
+	if (buildColor == 0)
+		glColor3f(0.8, 0.0, 0.0);
+	else if (buildColor == 1)
+		glColor3f(0.8, 0.8, 0.0);
+	else
+		glColor3f(0.0, 0.8, 0.8);
+
+	glTranslatef(b.block_x, 10.0, 0.0);   //base
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(15.0, 0.0, 0.0);
+	glVertex3f(15.0, 10.0, 0.0);
+	glVertex3f(0.0, 10.0, 0.0);
+	glEnd();
+	glColor3f(1.0, 1.0, 1.0);     // door
+	glBegin(GL_POLYGON);
+	glVertex3f(5.5, 0.0, 0.0);
+	glVertex3f(9.5, 0.0, 0.0);
+	glVertex3f(9.5, 6.0, 0.0);
+	glVertex3f(5.5, 6.0, 0.0);
+	glEnd();
+	glPopMatrix();
+}
+
+void cloud()
+{
+	glColor3f(1.0, 1.0, 1.0);
+	glTranslatef(s.block_x, s.block_y, 0.0);
+	glutSolidSphere(5, 100, 10);
+	glTranslatef(6, -3.0, 0.0);
+	glutSolidSphere(5, 100, 10);
+	glTranslatef(0, 6.0, 0.0);
+	glutSolidSphere(5, 100, 10);
+	glTranslatef(6, -3.0, 0.0);
+	glutSolidSphere(5, 100, 10);
+
+}
+
+bool hitCloud()
 {
 	if (s.block_x < 13 && s.block_x> -5)
 		if (plane_mvmt - 3 + 50 > s.block_y - 3 && plane_mvmt - 3 + 50 < s.block_y + 3)   // plane front to cloud mid box1
@@ -399,7 +518,7 @@ bool cloudHit()
 }
 
 
-bool buildingHit()
+bool hitBuilding()
 {
 	if (((int)b.block_x <= 8 && (int)b.block_x >= -7 && ((int)plane_mvmt + 50) - b.block_y <= 3))   //buildin back  body to tail
 		return true;
@@ -421,7 +540,7 @@ bool boundHit()
 		return false;
 }
 
-void printScore()
+void totalScore()
 {
 	glColor3f(1.0, 1.0, 0.0);//score
 
@@ -448,7 +567,7 @@ void printScore()
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//GameOver Checking status
+	//GameOver Checking
 	if (gameEndStatus == true)
 	{
 		gameEnd();
@@ -459,7 +578,7 @@ void display()
 	}
 	else if (instflag == true)
 	{
-		glColor3f(2.0f, 0.5f, 1.0f);   // background
+		glColor3f(0.3, 0.56, 0.84);   // background
 		glBegin(GL_POLYGON);
 		glVertex3f(0.0, 0.0, 0.0);
 		glColor3f(0.137, 0.137, 0.556);
@@ -505,7 +624,7 @@ void display()
 	}
 	else if (abtflag == true)
 	{
-		glColor3f(2.0f, 0.5f, 1.0f);   // background
+		glColor3f(0.3, 0.56, 0.84);   // background
 		glBegin(GL_POLYGON);
 		glVertex3f(0.0, 0.0, 0.0);
 		glColor3f(0.137, 0.137, 0.556);
@@ -534,7 +653,7 @@ void display()
 		glColor3f(0.137, 0.137, 0.556);
 		drawString(44, 75, 0, GLUT_BITMAP_TIMES_ROMAN_24, ((char*)"ABOUT"));
 		drawString(21, 61, 0, GLUT_BITMAP_HELVETICA_18, ((char*)"            COMPUTER GRAPHICS PROJECT"));
-		drawString(33, 40, 0, GLUT_BITMAP_HELVETICA_18, ((char*)" An airplane simulation game."));
+		//drawString(33, 40, 0, GLUT_BITMAP_HELVETICA_18, " ENJOY PLAYING THE GAME");
 		glutPostRedisplay();
 
 	}
@@ -557,12 +676,12 @@ void display()
 		glutPostRedisplay();
 
 	}
-	else if ((b.state == true && buildingHit() == true) || boundHit() == true)
+	else if ((b.state == true && hitBuilding() == true) || boundHit() == true)
 	{
 		gameEndStatus = true;
 		gameEnd();
 	}
-	else if (s.state == true && cloudHit() == true)
+	else if (s.state == true && hitCloud() == true)
 	{
 
 		gameEndStatus = true;
@@ -603,11 +722,11 @@ void display()
 			int random = rand() % 2;//for random building or cloud
 			if (random == 0)
 			{
-				buildingBlock();
+				buildBlocks();
 			}
 			else
 			{
-				CloudBlock();
+				CloudBlocks();
 			}
 		}
 
@@ -642,11 +761,11 @@ void display()
 		else if (s.state == true)
 		{
 			glTranslatef(s.block_x, 0.0, 0.0);
-			drawCloud();
+			cloud();
 		}
 		glPopMatrix();
 
-		printScore();
+		totalScore();
 	}
 	glFlush();
 	glutSwapBuffers();
@@ -659,8 +778,9 @@ void moveJetU()      // jet moving up
 		glutPostRedisplay();
 	else if (pause == false)
 	{
-		
-		plane_mvmt += 0.01;
+		//alti_ang-=0.15;
+
+		plane_mvmt += 0.05;
 		glutPostRedisplay();
 	}
 }
@@ -672,8 +792,8 @@ void moveJetD()          // jet moving down
 		glutPostRedisplay();
 	else if (pause == false)
 	{
-		
-		plane_mvmt -= 0.01;
+		//alti_ang+=0.15;
+		plane_mvmt -= 0.05;
 		glutPostRedisplay();
 	}
 }
@@ -806,11 +926,11 @@ void init()
 	int random = rand() % 2;
 	if (random == 0)
 	{
-		buildingBlock();
+		buildBlocks();
 	}
 	else
 	{
-		CloudBlock();
+		CloudBlocks();
 	}
 
 
