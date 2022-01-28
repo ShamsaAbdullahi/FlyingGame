@@ -105,6 +105,7 @@ void semiCircle(float p1, float q1, float radius)
 }
 
 
+
 void Circle(float x1, float y1, float radius)
 {
 	float x2, y2;
@@ -302,7 +303,7 @@ void drawBg()
 	glEnd();
 
 	glColor3f(0.5, 0.6, 0.79);// sky blue
-	glBegin(GL_POLYGON);   //background screen
+	glBegin(GL_POLYGON);   //background screen polygon
 	glVertex3f(0.0, 90.0, 5.0);
 	glVertex3f(100.0, 90.0, 5.0);
 	glColor3f(0.7, 0.8, 0.99);//sky
@@ -553,7 +554,7 @@ void printScore()
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//GameOver Checking
+	//GameOver Checking status
 	if (gameEndStatus == true)
 	{
 		gameEnd();
