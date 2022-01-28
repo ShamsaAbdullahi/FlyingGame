@@ -358,6 +358,178 @@ void welcome()
 }
 
 
+void drawBuilding()
+{
+	glPushMatrix();						// 3D part
+	if (buildColor == 0)
+		glColor3f(0.1, 0.0, 0.0);
+	else if (buildColor == 1)
+		glColor3f(0.1, 0.1, 0.0);
+	else
+		glColor3f(0.0, 0.1, 0.1);
+
+	glTranslatef(b.block_x, b.no_floors * 10.0 + 10, 0.0);
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(5.0, 3.0, 0.0);
+	glVertex3f(20.0, 3.0, 0.0);
+	glVertex3f(20.0, -b.no_floors * 10.0, 0.0);
+	glVertex3f(0.0, -b.no_floors * 10.0, 0.0);
+	glEnd();
+	glPopMatrix();
+
+	for (int i = 1; i <= b.no_floors; i++)
+	{
+		glPushMatrix();
+
+		if (buildColor == 0)
+			glColor3f(0.8, 0.0, 0.0);
+		else if (buildColor == 1)
+			glColor3f(0.8, 0.8, 0.0);
+		else
+			glColor3f(0.0, 0.8, 0.8);
+
+		glTranslatef(b.block_x, 10.0 * i, 0.0);   //base
+		glBegin(GL_POLYGON);
+		glVertex3f(0.0, 0.0, 0.0);
+		glVertex3f(15.0, 0.0, 0.0);
+		glVertex3f(15.0, 10.0, 0.0);
+		glVertex3f(0.0, 10.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // left window
+		glBegin(GL_POLYGON);
+		glVertex3f(2.5, 5.0, 0.0);
+		glVertex3f(5.5, 5.0, 0.0);
+		glVertex3f(5.5, 8.0, 0.0);
+		glVertex3f(2.5, 8.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // left window
+		glBegin(GL_POLYGON);
+		glVertex3f(2.5, 0.0, 0.0);
+		glVertex3f(5.5, 0.0, 0.0);
+		glVertex3f(5.5, 3.0, 0.0);
+		glVertex3f(2.5, 3.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // right window
+		glBegin(GL_POLYGON);
+		glVertex3f(12.5, 5.0, 0.0);
+		glVertex3f(9.5, 5.0, 0.0);
+		glVertex3f(9.5, 8.0, 0.0);
+		glVertex3f(12.5, 8.0, 0.0);
+		glEnd();
+		glColor3f(1.0, 1.0, 1.0);     // right window
+		glBegin(GL_POLYGON);
+		glVertex3f(12.5, .0, 0.0);
+		glVertex3f(9.5, 0.0, 0.0);
+		glVertex3f(9.5, 3.0, 0.0);
+		glVertex3f(12.5, 3.0, 0.0);
+		glEnd();
+		glPopMatrix();
+	}
+	glPushMatrix();
+
+	if (buildColor == 0)
+		glColor3f(0.8, 0.0, 0.0);
+	else if (buildColor == 1)
+		glColor3f(0.8, 0.8, 0.0);
+	else
+		glColor3f(0.0, 0.8, 0.8);
+
+	glTranslatef(b.block_x, 10.0, 0.0);   //base
+	glBegin(GL_POLYGON);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(15.0, 0.0, 0.0);
+	glVertex3f(15.0, 10.0, 0.0);
+	glVertex3f(0.0, 10.0, 0.0);
+	glEnd();
+	glColor3f(1.0, 1.0, 1.0);     // door
+	glBegin(GL_POLYGON);
+	glVertex3f(5.5, 0.0, 0.0);
+	glVertex3f(9.5, 0.0, 0.0);
+	glVertex3f(9.5, 6.0, 0.0);
+	glVertex3f(5.5, 6.0, 0.0);
+	glEnd();
+	glPopMatrix();
+}
+
+void drawCloud()
+{
+	glColor3f(1.0, 1.0, 1.0);
+	glTranslatef(s.block_x, s.block_y, 0.0);
+	glutSolidSphere(5, 100, 10);
+	glTranslatef(6, -3.0, 0.0);
+	glutSolidSphere(5, 100, 10);
+	glTranslatef(0, 6.0, 0.0);
+	glutSolidSphere(5, 100, 10);
+	glTranslatef(6, -3.0, 0.0);
+	glutSolidSphere(5, 100, 10);
+
+}
+
+bool cloudHit()
+{
+	if (s.block_x < 13 && s.block_x> -5)
+		if (plane_mvmt - 3 + 50 > s.block_y - 3 && plane_mvmt - 3 + 50 < s.block_y + 3)   // plane front to cloud mid box1
+			return true;
+
+	if (s.block_x < 12 && s.block_x> -4)
+		if (plane_mvmt - 3 + 50 > s.block_y - 5 && plane_mvmt - 3 + 50 < s.block_y + 5)   // plane front to cloud mib box2
+			return true;
+
+	if (s.block_x < 10 && s.block_x> -1)
+		if (plane_mvmt - 3 + 50 > s.block_y - 6 && plane_mvmt - 3 + 50 < s.block_y - 2)
+			return true;
+
+	//for top wing and bottom wing
+	if (s.block_x < 5 && s.block_x> -3)
+		if (plane_mvmt - 3 + 50 > s.block_y - 11 && plane_mvmt - 3 + 50 < s.block_y + 13)
+			return true;
+
+	return false;
+}
+
+
+bool buildingHit()
+{
+	if (((int)b.block_x <= 8 && (int)b.block_x >= -7 && ((int)plane_mvmt + 50) - b.block_y <= 3))   //buildin back  body to tail
+		return true;
+	else if (((int)b.block_x <= 10 && (int)b.block_x >= -5 && ((int)plane_mvmt + 50) - b.block_y <= 0))   //body to tail
+		return true;
+	else if (((int)b.block_x <= 6 && (int)b.block_x >= -3 && ((int)plane_mvmt + 47) - b.block_y <= 0))  //right wing
+		return true;
+	else if (((int)b.block_x <= 4 && (int)b.block_x >= -4 && ((int)plane_mvmt + 47) - b.block_y <= 3))  //   building back right wing
+		return true;
+	else
+		return false;
+}
+
+bool boundHit()
+{
+	if (plane_mvmt + 50 >= 100 || plane_mvmt + 50 <= 18)   // top and bottom boundary
+		return true;
+	else
+		return false;
+}
+void printScore()
+{
+	glColor3f(1.0, 1.0, 0.0);//score
+
+	sprintf(slevel, "%d", (int)level);
+	drawString(58, 1.8, 0, GLUT_BITMAP_TIMES_ROMAN_10, "Level");
+	drawString(58, 3.5, 0, GLUT_BITMAP_TIMES_ROMAN_24, slevel);
+
+	if (booster > 0 && boost)
+		score += 0.03;//SCORE with booster
+	else
+		score += 0.005;//SCORE without booster
+
+	drawString(38, 1.5, 0, GLUT_BITMAP_TIMES_ROMAN_10, "Distance");
+	sprintf(score_Str, "%d m", (int)score);
+	drawString(38, 3, 0, GLUT_BITMAP_TIMES_ROMAN_24, score_Str);
+
+
+}
+
 int main(int argc, char** argv)
 {
 	printf("\nHow To Play");
